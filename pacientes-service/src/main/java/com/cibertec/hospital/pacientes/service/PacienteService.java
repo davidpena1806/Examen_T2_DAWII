@@ -22,7 +22,7 @@ public class PacienteService {
     public Mono<Paciente> registrar(PacienteRequest r) {
         String tipo = r.tipoDocumento().toUpperCase();
         return repository.findByTipoDocumentoAndNumeroDocumento(tipo, r.numeroDocumento())
-                .flatMap(existente -> Mono.<Paciente>error(new ApiException(HttpStatus.CONFLICT,
+                .flatMap(existente -> Mono.<Paciente>error(new ApiException(HttpStatus.BAD_REQUEST,
                         "Ya existe un paciente con documento " + tipo + " " + r.numeroDocumento())))
                 .switchIfEmpty(Mono.defer(() -> repository.save(nuevo(r, tipo))));
     }
