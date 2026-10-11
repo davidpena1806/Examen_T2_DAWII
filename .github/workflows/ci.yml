@@ -1,0 +1,37 @@
+name: Integracion Continua - Hospital Vida Salud (endpoint POST /api/pacientes)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Compilar y probar endpoint POST /api/pacientes
+        run: |
+          if [ -f mvnw ]; then
+            chmod +x mvnw
+            ./mvnw --batch-mode -pl pacientes-service -am verify -Dtest=RegistroPacienteEndpointTest -Dsurefire.failIfNoSpecifiedTests=false
+          else
+            mvn --batch-mode -pl pacientes-service -am verify -Dtest=RegistroPacienteEndpointTest -Dsurefire.failIfNoSpecifiedTests=false
+          fi
+
+      - name: Publicar reporte de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: pacientes-service/target/surefire-reports/*.txt
+          if-no-files-found: ignore

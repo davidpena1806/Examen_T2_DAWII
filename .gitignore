@@ -1,0 +1,19 @@
+# Maven / Java
+target/
+*.class
+*.jar
+*.log
+!.mvn/wrapper/maven-wrapper.jar
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+# Secretos (NUNCA subir)
+.env
+*.env
+!.env.example
+
+docs/
